@@ -85,4 +85,4 @@ pr["cli"] = str(prcd)
 pr["memory_data"] = process_stat(pr["memory_data"])
 pr["cpuacct"] = dict(pr["cpuacct"].__dict__)
 
-print(json.dumps(data))
+sys.stdout.write(json.dumps(data) + "\n")

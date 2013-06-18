@@ -28,7 +28,7 @@ def _r():
 
 cmd_stats = namedtuple('cmd_stats', ('elapsed', 'memory_data',
                                                 'max_memory', 'cpuacct',
-                                                'stdout'))
+                                                'stdout', 'stderr'))
 cpuacct_stats = namedtuple('cpuacct_stats', ('hz', 'user', 'system',
                                              'usage'))
 
@@ -88,6 +88,7 @@ def measure_cmd(cmd):
     max_memory = None
     cpuacct = None
     stdout = None
+    stderr = None
 
     with CGroup(controllers=("memory", "cpuacct")) as cg:
         t1 = _t()
@@ -98,6 +99,7 @@ def measure_cmd(cmd):
         elapsed = t2 - t1
         # adjust timestamps to be relative to start of execution
         memory_data = [(t - t1, d) for t, d in memory_data]
+        # collect stats
         max_memory = int(cg.var("memory.max_usage_in_bytes"))
         cau = cg.var("cpuacct.usage", controller="cpuacct")
         cas = cg.var("cpuacct.stat", controller="cpuacct").split("\n")[:-1]
@@ -105,9 +107,11 @@ def measure_cmd(cmd):
         logging.debug("hz/cas: %r / %r" % (user_hz, cas))
         cpuacct = cpuacct_stats(user_hz, int(cas[0].split(' ')[1]) * user_hz,
                                 int(cas[1].split(' ')[1]) * user_hz, int(cau))
+        # get output
         stdout = fut.stdout
+        stderr = fut.stderr
 
-    return cmd_stats(elapsed, memory_data, max_memory, cpuacct, stdout)
+    return cmd_stats(elapsed, memory_data, max_memory, cpuacct, stdout, stderr)
 
 
 def process_stat(stat):
@@ -115,6 +119,7 @@ def process_stat(stat):
     Parse and sort (by time) memory usage information
     """
     output = []
+    prev_mem = 0
     for datum in stat:
         d = datum[1]
         memory = 0
@@ -124,5 +129,8 @@ def process_stat(stat):
             k, v = line.split(" ")
             if k in ("total_cache", "total_rss", "total_swap"):
                 memory += int(v)
-        output.append((datum[0], memory))
+        # collapse adjacent memory usages
+        if memory != prev_mem:
+            output.append((datum[0], memory))
+            prev_mem = memory
     return sorted(output, key=lambda d: d[0])

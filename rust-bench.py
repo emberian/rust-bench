@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 import json
@@ -21,7 +22,10 @@ else:
 user = os.environ['USER']
 filename = os.getenv('RBENCH_LOGFILE', 'rustbench.log')
 binname = os.path.splitext(os.path.split(crate)[-1])[0] + '.' + str(os.getpid())
-os.remove(filename)
+try:
+    os.remove(filename)
+except:
+    pass
 
 logging.basicConfig(level=logging.DEBUG, filename=filename)
 

@@ -1,0 +1,3 @@
+run rustc and benchmark, recording memory usage from cgroups.
+
+license: MIT

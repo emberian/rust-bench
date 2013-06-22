@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='rust-bench',
-    version='0.1.0',
+    version='0.2.0',
     author='Corey Richardson',
     author_email='corey@octayn.net',
     py_modules=['benchlib'],

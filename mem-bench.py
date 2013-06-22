@@ -28,7 +28,7 @@ logging.basicConfig(level=logging.DEBUG, filename=filename)
 
 cmd = local[cmd[0]][tuple(cmd[1:])]
 
-outp = measure_cmd(cmd)
+outp = measure_cmd(cmd, delay=0)
 
 data = dict(outp.__dict__)
 data["cli"] = str(cmd)

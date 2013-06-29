@@ -5,7 +5,6 @@ import json
 import sys
 import os
 
-import github
 import requests
 from plumbum import FG
 from plumbum.cmd import make, git, hub, R

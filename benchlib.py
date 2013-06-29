@@ -94,13 +94,8 @@ def measure_cmd(cmd, delay=0):
         t1 = _t()
         fut = cgexec["-g", cg.libcg_arg(), cmd] & BG
         if not os.environ.get("RBENCH_BASIC"):
-            if delay == 0:
-                while not fut.poll():
-                    memory_data.append((_t(), cg.mstat()))
-            else:
-                while not fut.poll():
-                    time.sleep(delay)
-                    memory_data.append((_t(), cg.mstat()))
+            while not fut.poll():
+                memory_data.append((_t(), cg.mstat()))
         else:
             fut.wait()
         t2 = _t()

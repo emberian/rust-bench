@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/python
 
 import base64
 import json
@@ -6,32 +6,32 @@ import sys
 import os
 
 import requests
-from plumbum import FG
-from plumbum.cmd import make, git, hub, R
+from plumbum import FG, local
+from plumbum.cmd import make, git, cp, mkdir
 
-imgur_id = "232aa2b16959bfd"
+#local.env["PATH"] = "/usr/lib/ccache/bin:" + local.env["PATH"]
+#git["checkout", sys.argv[1]] & FG
+#local["../configure"] & FG
+#make["clean"] & FG
+#make["-j4"] & FG
+## handle transient incorrect make failure (otherwise is a noop and harmless)
+#make["-j4"] & FG
 
-
-def post_image(path):
-    header = {"Authorization": "Client-ID " + imgur_id}
-    img = base64.b64encode(open(path).read())
-    parms = {"type": "base64", "image": img}
-    r = requests.post("https://api.imgur.com/3/upload", data=img, headers=header)
-    j = r.json()
-    print(j)
-
-# get baseline measurement
-git["checkout", "master"] & FG
-make["-j6"] & FG
 # forgive me father, for I have sinned
-os.system("mem-bench.py x86_64-unknown-linux-gnu/stage2/bin/rustc --cfg stage2 -O -Z no-debug-borrows --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so /home/cmr/hacking/rust/src/librustc/rustc.rc > baseline.json")
-os.system("time x86_64-unknown-linux-gnu/stage2/bin/rustc --cfg stage2 -O -Z no-debug-borrows --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so /home/cmr/hacking/rust/src/librustc/rustc.rc > time_baseline.txt")
-git["checkout", sys.argv[1]] & FG
-make["-j6"] & FG
-os.system("mem-bench.py x86_64-unknown-linux-gnu/stage2/bin/rustc --cfg stage2 -O -Z no-debug-borrows --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so /home/cmr/hacking/rust/src/librustc/rustc.rc > data.json")
-os.system("time x86_64-unknown-linux-gnu/stage2/bin/rustc --cfg stage2 -O -Z no-debug-borrows --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so /home/cmr/hacking/rust/src/librustc/rustc.rc > time_data.txt")
-r = (R["--no-save", "--args", "rustc.png", "master (%s)" % git["rev-parse", "master"]().strip()[:7], "%s (%s)" % (sys.argv[1], git["rev-parse", sys.argv[1]]().strip()[:7]), "baseline.json", "data.json"] < "/home/cmr/.local/bin/plot-twoprogs.R")
-print(str(r))
-r & FG
+if os.path.exists("../src/librustc/rustc.rc"):
+    os.system("mem-bench.py x86_64-unknown-linux-gnu/stage2/bin/rustc -Z time-passes --cfg stage2 -O --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so ../src/librustc/rustc.rc > mem.json")
+    os.system("/usr/bin/time x86_64-unknown-linux-gnu/stage2/bin/rustc -Z time-passes --cfg stage2 -O --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so ../src/librustc/rustc.rc 2>&1 | tail -n2 > time.txt")
+else:
+    os.system("mem-bench.py x86_64-unknown-linux-gnu/stage2/bin/rustc -Z time-passes --cfg stage2 -O --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so ../src/librustc/rustc.rs > mem.json")
+    os.system("/usr/bin/time x86_64-unknown-linux-gnu/stage2/bin/rustc -Z time-passes --cfg stage2 -O --target=x86_64-unknown-linux-gnu -o x86_64-unknown-linux-gnu/stage2/lib/rustc/x86_64-unknown-linux-gnu/lib/librustc.so ../src/librustc/rustc.rs 2>&1 | tail -n2 > time.txt")
 
-post_image("rustc.png")
+datadir = "/home/cmr/benches/%s/" % git["rev-parse", sys.argv[1]]().strip()
+mkdir["-v", "-p", datadir] & FG
+cp["-v", "-t", datadir, "mem.json"] & FG
+cp["-v", "-t", datadir, "time.txt"] & FG
+
+with open("/home/cmr/benches/history.txt", "a") as hist:
+    hist.write(git["rev-parse", sys.argv[1]]())
+
+with open(datadir + "commit_info.txt", "w") as ci:
+    ci.write(git["show", "-s", "--format=%an %aE%n%at%n%s"]())

@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 import os
 import sys
 import json
 import logging
 
 from plumbum import local
-from plumbum.commands import BoundCommand as BC
+from plumbum.commands import BaseCommand as BC
 from plumbum.cmd import rustc, sleep, sudo, cgcreate
 
 from benchlib import measure_cmd, process_stat

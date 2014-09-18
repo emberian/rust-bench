@@ -2,11 +2,10 @@ from distutils.core import setup
 
 setup(
     name='rust-bench',
-    version='0.2.0',
+    version='0.3.0',
     author='Corey Richardson',
     author_email='corey@octayn.net',
-    py_modules=['benchlib'],
-    scripts=['rust-bench.py', 'mem-bench.py', 'benchit.py'],
+    scripts=['benchit.py'],
     url='http://github.com/cmr/rust-bench',
     license='MIT',
     description='simple rust benchmarking runner using cgroups',

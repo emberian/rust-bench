@@ -33,24 +33,24 @@ if os.path.exists("/mnt/rustb/%s" % sys.argv[1]):
     try:
         if os.path.exists("../src/librustc/rustc.rc"):
             print("Memory Benching now")
-            assert 0 == os.system("mem-bench.py /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/rustc.rc > mem.json" % (a, args))
+            assert 0 == os.system("mem-bench /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/rustc.rc > mem.json" % (a, args))
             print("Time benching now")
             assert 0 == os.system("/usr/bin/time /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/rustc.rc 2>&1 | tail -n2 > time.txt" % (a, args))
         else:
             print("Memory Benching now")
-            assert 0 == os.system("mem-bench.py /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/lib.rs > mem.json" % (a, args))
+            assert 0 == os.system("mem-bench /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/lib.rs > mem.json" % (a, args))
             print("Time benching now")
             assert 0 == os.system("/usr/bin/time /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/lib.rs 2>&1 | tail -n2 > time.txt" % (a, args))
     except AssertionError:
         args = "--emit-llvm -L x86_64-unknown-linux-gnu/llvm/Release+Asserts/lib -Z time-passes --cfg stage2 -O --target=x86_64-unknown-linux-gnu -o /tmp/rustc.so"
         if os.path.exists("../src/librustc/rustc.rc"):
             print("Memory Benching now")
-            assert 0 == os.system("mem-bench.py /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/rustc.rc > mem.json" % (a, args))
+            assert 0 == os.system("mem-bench /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/rustc.rc > mem.json" % (a, args))
             print("Time benching now")
             assert 0 == os.system("/usr/bin/time /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/rustc.rc 2>&1 | tail -n2 > time.txt" % (a, args))
         else:
             print("Memory Benching now")
-            assert 0 == os.system("mem-bench.py /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/lib.rs > mem.json" % (a, args))
+            assert 0 == os.system("mem-bench /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/lib.rs > mem.json" % (a, args))
             print("Time benching now")
             assert 0 == os.system("/usr/bin/time /mnt/rustb/%s/stage2/bin/rustc %s ../src/librustc/lib.rs 2>&1 | tail -n2 > time.txt" % (a, args))
 

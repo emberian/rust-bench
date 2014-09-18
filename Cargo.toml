@@ -1,0 +1,14 @@
+[package]
+
+name = "membench"
+version = "0.0.1"
+authors = ["Corey Richardson <corey@octayn.net>"]
+
+[dependencies.cgroup]
+
+git = "https://github.com/cmr/rust-cgroup"
+
+[[bin]]
+
+name = "membench"
+path = "src/main.rs"

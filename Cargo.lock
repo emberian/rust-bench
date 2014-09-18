@@ -1,0 +1,12 @@
+[root]
+name = "membench"
+version = "0.0.1"
+dependencies = [
+ "cgroup 0.0.1 (git+https://github.com/cmr/rust-cgroup#bd4203143d4ae360215b113496c879c96b2d74a0)",
+]
+
+[[package]]
+name = "cgroup"
+version = "0.0.1"
+source = "git+https://github.com/cmr/rust-cgroup#bd4203143d4ae360215b113496c879c96b2d74a0"
+

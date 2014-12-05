@@ -3,10 +3,24 @@ name = "membench"
 version = "0.0.1"
 dependencies = [
  "cgroup 0.0.1 (git+https://github.com/cmr/rust-cgroup)",
+ "time 0.1.0 (git+https://github.com/rust-lang/time)",
 ]
 
 [[package]]
 name = "cgroup"
 version = "0.0.1"
 source = "git+https://github.com/cmr/rust-cgroup#cbce3fb19cfb3eea67749cd4e1f755622c36f060"
+
+[[package]]
+name = "gcc"
+version = "0.1.0"
+source = "git+https://github.com/alexcrichton/gcc-rs#f87b26822575c45b36bb5fa40597495160657000"
+
+[[package]]
+name = "time"
+version = "0.1.0"
+source = "git+https://github.com/rust-lang/time#b8e219aa9fca15ed1377a7d62aff1eb4378f3ba4"
+dependencies = [
+ "gcc 0.1.0 (git+https://github.com/alexcrichton/gcc-rs)",
+]
 

@@ -51,7 +51,7 @@ pub fn process_stat(mstat: &str) -> u64 {
 
 pub fn measure_cmd(prog: &str, args: &[String]) -> CommandStats {
     let mut sdr = Command::new("systemd-run");
-    sdr.args(["-p", "MemoryAccounting=Yes", "--user", "--scope"]);
+    sdr.args(&["-p", "MemoryAccounting=Yes", "--user", "--scope"]);
     sdr.arg(prog);
     sdr.args(args);
 

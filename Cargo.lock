@@ -2,11 +2,11 @@
 name = "membench"
 version = "0.0.1"
 dependencies = [
- "cgroup 0.0.1 (git+https://github.com/cmr/rust-cgroup#bd4203143d4ae360215b113496c879c96b2d74a0)",
+ "cgroup 0.0.1 (git+https://github.com/cmr/rust-cgroup)",
 ]
 
 [[package]]
 name = "cgroup"
 version = "0.0.1"
-source = "git+https://github.com/cmr/rust-cgroup#bd4203143d4ae360215b113496c879c96b2d74a0"
+source = "git+https://github.com/cmr/rust-cgroup#cbce3fb19cfb3eea67749cd4e1f755622c36f060"
 

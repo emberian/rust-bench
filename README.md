@@ -6,7 +6,9 @@ to monitor memory usage in a very fine-grained manner and plot the resulting
 data.
 
 As these scripts were only ever used by me, you may need to frob some paths
-here and there in the source.
+here and there in the source. It's pretty much abandoned at this point since
+I ran out of time and resources to keep this running in the background on my
+desktop. I could pick it back up again, though.
 
 # `auto-bench.py`
 
